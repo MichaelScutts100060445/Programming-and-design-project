@@ -7644,7 +7644,8 @@ def GameLoop(check, whichPlayersTurn, draggingPawn, draggingCastle, draggingKnig
 
 
 
-BG = pygame.image.load("background.jpg")
+BG = pygame.image.load("background Final.jpeg")
+BG = pygame.transform.scale(BG, (1000,1000))
 
 def draw_text(text, font, color, surface, x, y): # defining a function draw_text for drawing words on buttons that takes the following peramiteres.
     text_obj = font.render(text, True, color) # renders text
@@ -7659,12 +7660,14 @@ def main_menu():
     while True: # started our loop
         playButtonRect = pygame.Rect(screenWidth // 2 - 100, screenHeight // 2 - 50, 200, 100) # start button variable position
         quitButtonRect = pygame.Rect(screenWidth // 2 - 100, screenHeight // 2 - -100, 200, 100) # quit button variable positioning
+        instructButtonRect = pygame.Rect(screenWidth // 2 - 100, screenHeight // 2 - -250, 200, 100) # instructions button variable position
         # Iterates over every action taken by the user
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # if the event type is quitting pygame application, exit pygame and sys.
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.mixer.Sound('mouse-click-153941.mp3').play() 
                 if playButtonRect.collidepoint(pygame.mouse.get_pos()):
                     # if the event taken was a mouse click by the user, and the collidepoint is on the start button;
                     # Transition to next screen
@@ -7673,20 +7676,54 @@ def main_menu():
                 if quitButtonRect.collidepoint(pygame.mouse.get_pos()):
                     pygame.quit()
                     sys.exit()
+                if instructButtonRect.collidepoint(pygame.mouse.get_pos()):
+                    instructScreen()
+                    
                     
 
-        screen.blit(BG, (0, 0)) # Here we initialise the BG variable to set background of menu screen
+        screen.blit(BG, (0,0)) # Here we initialise the BG variable to set background of menu screen
         draw_text("Chess Game", pygame.font.Font(None, 60), (0, 0, 0), screen, screenWidth // 2, 100) # title drawn using draw_text function
-        colourOfButton = (0, 0, 0) # addding colour of start button
-        colourOfQuitButton = (20,20,20) # colour of quit button
+        colourOfButton = (0, 255, 0) # addding colour of start button
+        colourOfQuitButton = (255, 0, 0) # colour of quit button
+        colourOfInstructButton = (20,100,160) # colour of instructions button
         pygame.draw.rect(screen, colourOfButton, playButtonRect) # drawing start button
         pygame.draw.rect(screen, colourOfQuitButton, quitButtonRect) # drawing quit button
+        pygame.draw.rect(screen, colourOfInstructButton, instructButtonRect) # drawing instructions button
         # taken from existing pygame Font class
-        draw_text("Start", pygame.font.Font(None, 60), (255, 0, 0), screen, screenWidth // 2, screenHeight // 2,)
-        draw_text("Quit", pygame.font.Font(None, 60), (255, 0, 0), screen, screenWidth // 2, screenHeight // 1.4 - 60)
+        draw_text("Start", pygame.font.Font(None, 60), (0, 0, 0), screen, screenWidth // 2, screenHeight // 2,)
+        draw_text("Quit", pygame.font.Font(None, 60), (0, 0, 0), screen, screenWidth // 2, screenHeight // 1.4 - 60)
+        draw_text("Instructions", pygame.font.Font(None, 40), (0, 0, 0), screen, screenWidth // 2, screenHeight // 1.2 - 30)
         pygame.display.flip() # turns to next screen once button clicked
         clock.tick(60)
 
 
+def instructScreen():
+    while True:
+        backButtonRect = pygame.Rect(screenWidth // 2 - 100, screenHeight // 2 - -270, 200, 100)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    pygame.mixer.Sound('mouse-click-153941.mp3').play()
+                    if backButtonRect.collidepoint(pygame.mouse.get_pos()):
+                        main_menu()
+
+        screen.blit(BG, (0, 0))
+        draw_text("Instructions", pygame.font.Font(None, 60), (0, 0, 0), screen, screenWidth // 2, 100,)
+        draw_text("* Double click and hold on piece while moving to desired position", pygame.font.Font(None, 35), (0,0,0), screen, screenWidth// 2, 200,)
+        draw_text("* To win you must put the opponent's king piece in checkmate", pygame.font.Font(None, 35), (0, 0, 0), screen, screenWidth // 2, 240,)
+        draw_text("* Checkmate is achieved by traping the king once it is in check", pygame.font.Font(None, 35), (0, 0, 0), screen, screenWidth // 2, 280,)
+        draw_text("* Check is achieved by putting the king in a compromising position", pygame.font.Font(None, 35), (0, 0, 0), screen, screenWidth // 2, 320,)
+        draw_text("* Stalemate can be achieved if a king is trapped but is not in check", pygame.font.Font(None, 35), (0, 0, 0), screen, screenWidth // 2, 360,)
+        draw_text("* Pawns are able to turn into queens if they reach opposite side of board", pygame.font.Font(None, 35), (0, 0, 0), screen, screenWidth // 2, 400,)
+        draw_text("* Castling can be done when king has not moved from original position", pygame.font.Font(None, 35), (0, 0, 0), screen, screenWidth // 2, 440,)
+        draw_text("* When king is in check, your next move will have to be getting king out of danger", pygame.font.Font(None, 35), (0, 0, 0), screen, screenWidth // 2, 480,)
+        draw_text("Reference: https://thechessworld.com/basic-chess-rules/rules-of-chess/", pygame.font.Font(None, 38), (0, 0, 0), screen, screenWidth // 2, 700,)
+        colourOfButtonBack = (20,20,20) # colour of back button
+        pygame.draw.rect(screen, colourOfButtonBack, backButtonRect) # drawing back button on screen 
+        draw_text("Back", pygame.font.Font(None, 60), (255,0,0), screen, screenWidth // 2, screenHeight // 1.13 - 60) 
+        pygame.display.flip() # turns to next screen once button clicked
+        clock.tick(60)                 
 
 main_menu() # runs program
